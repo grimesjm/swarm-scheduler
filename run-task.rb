@@ -40,6 +40,7 @@ end
 # docker service update --force --replicas 1 service1
 # because we don't have docker client installed
 Docker.validate_version!
-
-Docker::Service.all(filters: {name: [service_name]}.to_json)[0].scale 1
+if Docker::Container.all(all:true,filters:{name: [service_name],status: ["running"]}.to_json).size == 0
+  Docker::Service.all(filters: {name: [service_name]}.to_json)[0].scale 1
+end
 puts "OK"
